@@ -14,6 +14,6 @@ interface ApiService {
         @Query("type") type: String? = null,
         @Query("muscle") muscle: String? = null,
         @Query("difficulty") difficulty: String? = null,
-        @Header("X-Api-Key") apiKey: String = BuildConfig.POLYGON_API_KEY
+        @Header("X-Api-Key") apiKey: String = BuildConfig.API_KEY
     ): Response<Exercise>
 }

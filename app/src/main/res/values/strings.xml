@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GetMeFit</string>
+    <string name="error_body">Something went wrong. Try again</string>
 </resources>

@@ -1,4 +1,31 @@
 package com.example.getmefit.network.repo
 
-class ExercisesRepo {
+import com.example.getmefit.common.RepoState
+import com.example.getmefit.common.fetch
+import com.example.getmefit.network.ApiService
+import com.example.getmefit.network.data.Difficulty
+import com.example.getmefit.network.data.Exercise
+import com.example.getmefit.network.data.ExerciseType
+import com.example.getmefit.network.data.Muscle
+import javax.inject.Inject
+
+class ExercisesRepo @Inject constructor(
+    private val apiService: ApiService
+) {
+    suspend fun fetchExercises(
+        name: String?,
+        type: ExerciseType?,
+        muscle: Muscle?,
+        difficulty: Difficulty?
+    ): RepoState<Exercise> {
+        return fetch {
+            apiService.getExercise(
+                name = name,
+                type = type?.queryParamLabel,
+                muscle = muscle?.queryParamLabel,
+                difficulty = difficulty?.queryParamLabel
+            )
+        }
+
+    }
 }

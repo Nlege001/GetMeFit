@@ -21,8 +21,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField(
             "String",
-            "POLYGON_API_KEY",
-            "\"${project.findProperty("POLYGON_API_KEY")}\""
+            "API_KEY",
+            "\"${project.findProperty("API_KEY")}\""
         )
     }
 
