@@ -1,5 +1,6 @@
 package com.example.getmefit.view
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.getmefit.common.RepoState
@@ -22,6 +23,7 @@ class ExerciseViewModel @AssistedInject constructor(
     val exercises: StateFlow<RepoState<List<Exercise>>> = _exercisesState
 
     init {
+        Log.d("Naol", "Naol $navData")
         getExercises(
             name = null,
             type = navData.type?.queryParamLabel,
