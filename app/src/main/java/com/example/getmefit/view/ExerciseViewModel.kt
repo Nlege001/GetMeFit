@@ -3,34 +3,38 @@ package com.example.getmefit.view
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.getmefit.common.RepoState
-import com.example.getmefit.network.data.Difficulty
 import com.example.getmefit.network.data.Exercise
-import com.example.getmefit.network.data.ExerciseType
-import com.example.getmefit.network.data.Muscle
 import com.example.getmefit.network.repo.ExercisesRepo
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.example.getmefit.view.data.ExerciseDetailsNavData
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ExerciseViewModel @Inject constructor(
-    private val exercisesRepo: ExercisesRepo
+class ExerciseViewModel @AssistedInject constructor(
+    private val exercisesRepo: ExercisesRepo,
+    @Assisted val navData: ExerciseDetailsNavData,
 ) : ViewModel() {
 
-    private val _exercisesState = MutableStateFlow<RepoState<Exercise>>(RepoState.Loading)
-    val exercises: StateFlow<RepoState<Exercise>> = _exercisesState
+    private val _exercisesState = MutableStateFlow<RepoState<List<Exercise>>>(RepoState.Loading)
+    val exercises: StateFlow<RepoState<List<Exercise>>> = _exercisesState
 
-    /*init {
-        getExercises()
-    }*/
+    init {
+        getExercises(
+            name = null,
+            type = navData.type?.queryParamLabel,
+            muscle = navData.muscle?.queryParamLabel,
+            difficulty = navData.difficulty?.queryParamLabel,
+        )
+    }
 
     fun getExercises(
         name: String?,
-        type: ExerciseType?,
-        muscle: Muscle?,
-        difficulty: Difficulty?
+        type: String?,
+        muscle: String?,
+        difficulty: String?
     ) {
         viewModelScope.launch {
             _exercisesState.value = exercisesRepo.fetchExercises(
@@ -41,4 +45,10 @@ class ExerciseViewModel @Inject constructor(
             )
         }
     }
+
+    @AssistedFactory
+    interface ExerciseViewModelFactory {
+        fun create(navData: ExerciseDetailsNavData): ExerciseViewModel
+    }
+
 }

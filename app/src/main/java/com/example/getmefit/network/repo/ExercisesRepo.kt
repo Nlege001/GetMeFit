@@ -14,16 +14,16 @@ class ExercisesRepo @Inject constructor(
 ) {
     suspend fun fetchExercises(
         name: String?,
-        type: ExerciseType?,
-        muscle: Muscle?,
-        difficulty: Difficulty?
-    ): RepoState<Exercise> {
+        type: String?,
+        muscle: String?,
+        difficulty: String?
+    ): RepoState<List<Exercise>> {
         return fetch {
             apiService.getExercise(
                 name = name,
-                type = type?.queryParamLabel,
-                muscle = muscle?.queryParamLabel,
-                difficulty = difficulty?.queryParamLabel
+                type = type,
+                muscle = muscle,
+                difficulty = difficulty
             )
         }
 

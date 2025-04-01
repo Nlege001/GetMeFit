@@ -5,14 +5,15 @@ plugins {
     id("kotlin-kapt")  // Apply KAPT plugin here
     alias(libs.plugins.hilt)  // Hilt plugin
     id("androidx.navigation.safeargs.kotlin")
+    id("kotlin-parcelize")
 }
 
 android {
-    namespace = "com.example.stocktracker"
+    namespace = "com.example.getmefit"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.stocktracker"
+        applicationId = "com.example.getmefit"
         minSdk = 24
         targetSdk = 35
         versionCode = 1

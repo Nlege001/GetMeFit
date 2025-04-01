@@ -1,10 +1,10 @@
 package com.example.getmefit.network.data
 
 data class Exercise(
-    val name: String,
-    val type: String,
-    val muscle: String,
-    val equipment: String,
-    val difficulty: String,
-    val instructions: String
+    val name: String?,
+    val type: String?,
+    val muscle: String?,
+    val equipment: String?,
+    val difficulty: String?,
+    val instructions: String?
 )
