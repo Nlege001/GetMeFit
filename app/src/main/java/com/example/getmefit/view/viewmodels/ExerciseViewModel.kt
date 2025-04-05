@@ -1,4 +1,4 @@
-package com.example.getmefit.view
+package com.example.getmefit.view.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

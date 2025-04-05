@@ -1,4 +1,4 @@
-package com.example.getmefit.view
+package com.example.getmefit.view.fragments
 
 import android.os.Bundle
 import android.view.View
@@ -6,6 +6,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.getmefit.R
+import com.example.getmefit.view.composables.ExerciseScreen
 import com.example.getmefit.view.data.ExerciseDetailsNavData
 import dagger.hilt.android.AndroidEntryPoint
 

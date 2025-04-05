@@ -1,4 +1,4 @@
-package com.example.getmefit.view
+package com.example.getmefit.view.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

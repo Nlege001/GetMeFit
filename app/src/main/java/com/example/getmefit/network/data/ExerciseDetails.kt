@@ -1,8 +1,10 @@
 package com.example.getmefit.network.data
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
 
+@Keep
 @Parcelize
 sealed interface ExerciseDetails : Parcelable {
     val queryParamLabel: String

@@ -1,4 +1,4 @@
-package com.example.getmefit.view
+package com.example.getmefit.view.fragments
 
 import android.os.Bundle
 import android.view.View
@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.getmefit.R
 import com.example.getmefit.common.ViewStateCoordinator
+import com.example.getmefit.view.viewmodels.ExerciseViewModel
+import com.example.getmefit.view.composables.ExerciseDetailsScreen
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

@@ -6,12 +6,12 @@
 
     <fragment
         android:id="@+id/exerciseFragment"
-        android:name="com.example.getmefit.view.ExerciseFragment"
+        android:name="com.example.getmefit.view.fragments.ExerciseFragment"
         android:label="Exercises" />
 
     <fragment
         android:id="@+id/exerciseDetailsFragment"
-        android:name="com.example.getmefit.view.ExerciseDetailsFragment"
+        android:name="com.example.getmefit.view.fragments.ExerciseDetailsFragment"
         android:label="Details">
         <argument
             android:name="navData"
