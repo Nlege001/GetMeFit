@@ -12,7 +12,11 @@
     <fragment
         android:id="@+id/exerciseFragment"
         android:name="com.example.getmefit.view.fragments.ExerciseFragment"
-        android:label="Exercises"/>
+        android:label="Exercises">
+        <argument
+            android:name="version"
+            app:argType="com.example.getmefit.view.data.ExerciseOptions"/>
+    </fragment>
 
     <action
         android:id="@+id/navToExerciseFragment"

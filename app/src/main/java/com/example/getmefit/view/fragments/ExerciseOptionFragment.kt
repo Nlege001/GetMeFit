@@ -31,7 +31,7 @@ class ExerciseOptionFragment : Fragment(R.layout.fragment_base) {
         content.setContent {
             ExerciseOptionScreen(
                 onClick = {
-                    navController.navigate(ExerciseFragmentDirections.navToExerciseFragment())
+                    navController.navigate(ExerciseFragmentDirections.navToExerciseFragment(it))
                 }
             )
         }
@@ -66,5 +66,4 @@ fun ExerciseOptionScreen(
         }
 
     }
-
 }

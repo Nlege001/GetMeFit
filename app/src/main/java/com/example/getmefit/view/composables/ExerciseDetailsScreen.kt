@@ -17,10 +17,13 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,10 +34,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.getmefit.R
 import com.example.getmefit.network.data.Exercise
+import com.example.getmefit.view.data.ExerciseOptions
 
 @Composable
 fun ExerciseDetailsScreen(
     data: List<Exercise>,
+    version: ExerciseOptions,
     onClick: (Exercise) -> Unit
 ) {
     if (data.isEmpty()) {
@@ -57,14 +62,27 @@ fun ExerciseDetailsScreen(
         }
 
     } else {
+        val savedExercises = rememberSaveable { mutableStateOf<List<Exercise>>(emptyList()) }
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-
+            if (version.hasAddRemoveOption) {
+                item {
+                    AddedExerciseCount(savedExercises.value.size)
+                }
+            }
             itemsIndexed(data) { index, item ->
                 ExerciseCard(
                     exercise = item,
-                    onClick = onClick
+                    onClick = onClick,
+                    version = version,
+                    onRemove = {
+                        savedExercises.value = savedExercises.value.minus(it)
+                    },
+                    onAdd = {
+                        savedExercises.value = savedExercises.value.plus(it)
+                    },
+                    isAdded = { savedExercises.value.contains(it) },
                 )
 
                 if (index != data.lastIndex) {
@@ -79,7 +97,11 @@ fun ExerciseDetailsScreen(
 fun ExerciseCard(
     modifier: Modifier = Modifier,
     exercise: Exercise,
-    onClick: (Exercise) -> Unit
+    onClick: (Exercise) -> Unit,
+    version: ExerciseOptions,
+    onAdd: (Exercise) -> Unit,
+    onRemove: (Exercise) -> Unit,
+    isAdded: (Exercise) -> Boolean,
 ) {
     val difficultyColor = when (exercise.difficulty?.lowercase()) {
         "beginner" -> Color(0xFF4CAF50)  // Green for easy
@@ -96,64 +118,76 @@ fun ExerciseCard(
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(16.dp)
-        ) {
-            // Exercise Name
-            Text(
-                text = exercise.name ?: "Unknown Exercise",
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Tags Row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                ExerciseTag(
-                    text = exercise.type ?: "N/A",
-                    color = MaterialTheme.colorScheme.primary
-                )
-                ExerciseTag(
-                    text = exercise.muscle ?: "N/A",
-                    color = MaterialTheme.colorScheme.secondary
-                )
-                ExerciseTag(
-                    text = exercise.equipment ?: "N/A",
-                    color = MaterialTheme.colorScheme.tertiary
-                )
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Difficulty Badge
-            Box(
+        Box {
+            Column(
                 modifier = Modifier
-                    .background(difficultyColor, shape = RoundedCornerShape(8.dp))
-                    .padding(horizontal = 12.dp, vertical = 4.dp)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(16.dp)
             ) {
+                // Exercise Name
                 Text(
-                    text = exercise.difficulty?.uppercase() ?: "UNKNOWN",
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                    text = exercise.name ?: "Unknown Exercise",
+                    style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Tags Row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    ExerciseTag(
+                        text = exercise.type ?: "N/A",
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    ExerciseTag(
+                        text = exercise.muscle ?: "N/A",
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                    ExerciseTag(
+                        text = exercise.equipment ?: "N/A",
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Difficulty Badge
+                Box(
+                    modifier = Modifier
+                        .background(difficultyColor, shape = RoundedCornerShape(8.dp))
+                        .padding(horizontal = 12.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = exercise.difficulty?.uppercase() ?: "UNKNOWN",
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Instructions
+                Text(
+                    text = exercise.instructions ?: "No instructions available.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                    maxLines = 4,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Instructions
-            Text(
-                text = exercise.instructions ?: "No instructions available.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                maxLines = 4,
-                overflow = TextOverflow.Ellipsis
-            )
+            if (version.hasAddRemoveOption) {
+                AddRemoveCtas(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    onAdd = { onAdd(exercise) },
+                    onRemove = { onRemove(exercise) },
+                    isAdded = isAdded,
+                    exercise = exercise
+                )
+            }
         }
     }
 }
@@ -171,5 +205,30 @@ fun ExerciseTag(text: String, color: Color) {
             color = color,
             style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold)
         )
+    }
+}
+
+@Composable
+private fun AddedExerciseCount(
+    count: Int
+) {
+    Column(
+        modifier = Modifier.padding(horizontal = 8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        ) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = "Added Exercises"
+            )
+            Text(
+                text = count.toString()
+            )
+        }
+
+        HorizontalDivider(modifier = Modifier.fillMaxWidth())
     }
 }

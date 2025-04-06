@@ -51,7 +51,8 @@ class ExerciseDetailsFragment : Fragment(R.layout.fragment_base) {
             ) {
                 ExerciseDetailsScreen(
                     data = it,
-                    onClick = {}
+                    onClick = {},
+                    version = args.navData.version
                 )
             }
         }

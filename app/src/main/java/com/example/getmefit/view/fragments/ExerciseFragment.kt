@@ -5,6 +5,7 @@ import android.view.View
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.getmefit.R
 import com.example.getmefit.view.composables.ExerciseScreen
 import com.example.getmefit.view.data.ExerciseDetailsNavData
@@ -12,6 +13,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class ExerciseFragment : Fragment(R.layout.fragment_base) {
+
+    val args by navArgs<ExerciseFragmentArgs>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -25,7 +28,8 @@ class ExerciseFragment : Fragment(R.layout.fragment_base) {
                         navData = ExerciseDetailsNavData(
                             muscle = muscle,
                             difficulty = difficulty,
-                            type = type
+                            type = type,
+                            version = args.version
                         )
                     )
                 )

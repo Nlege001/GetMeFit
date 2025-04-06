@@ -10,5 +10,6 @@ import kotlinx.parcelize.Parcelize
 data class ExerciseDetailsNavData(
     val muscle: ExerciseDetails?,
     val difficulty: ExerciseDetails?,
-    val type: ExerciseDetails?
+    val type: ExerciseDetails?,
+    val version: ExerciseOptions
 ) : Parcelable
