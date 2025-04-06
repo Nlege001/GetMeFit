@@ -63,30 +63,31 @@ fun ExerciseDetailsScreen(
 
     } else {
         val savedExercises = rememberSaveable { mutableStateOf<List<Exercise>>(emptyList()) }
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
+        Column {
             if (version.hasAddRemoveOption) {
-                item {
-                    AddedExerciseCount(savedExercises.value.size)
-                }
+                AddedExerciseCount(savedExercises.value.size)
             }
-            itemsIndexed(data) { index, item ->
-                ExerciseCard(
-                    exercise = item,
-                    onClick = onClick,
-                    version = version,
-                    onRemove = {
-                        savedExercises.value = savedExercises.value.minus(it)
-                    },
-                    onAdd = {
-                        savedExercises.value = savedExercises.value.plus(it)
-                    },
-                    isAdded = { savedExercises.value.contains(it) },
-                )
 
-                if (index != data.lastIndex) {
-                    Spacer(Modifier.height(8.dp))
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                itemsIndexed(data) { index, item ->
+                    ExerciseCard(
+                        exercise = item,
+                        onClick = onClick,
+                        version = version,
+                        onRemove = {
+                            savedExercises.value = savedExercises.value.minus(it)
+                        },
+                        onAdd = {
+                            savedExercises.value = savedExercises.value.plus(it)
+                        },
+                        isAdded = { savedExercises.value.contains(it) },
+                    )
+
+                    if (index != data.lastIndex) {
+                        Spacer(Modifier.height(8.dp))
+                    }
                 }
             }
         }
