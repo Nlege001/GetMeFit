@@ -24,5 +24,13 @@ sealed interface ExerciseDetails : Parcelable {
                 }
             }
         }
+
+        fun ExerciseDetails.updateSelection(isSelected: Boolean) : ExerciseDetails? {
+            return if(isSelected) {
+                this
+            } else {
+                null
+            }
+        }
     }
 }

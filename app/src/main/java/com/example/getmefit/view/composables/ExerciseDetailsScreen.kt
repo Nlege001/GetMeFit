@@ -1,6 +1,7 @@
 package com.example.getmefit.view.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,7 +34,8 @@ import com.example.getmefit.network.data.Exercise
 
 @Composable
 fun ExerciseDetailsScreen(
-    data: List<Exercise>
+    data: List<Exercise>,
+    onClick: (Exercise) -> Unit
 ) {
     if (data.isEmpty()) {
         Column(
@@ -60,7 +62,10 @@ fun ExerciseDetailsScreen(
         ) {
 
             itemsIndexed(data) { index, item ->
-                ExerciseCard(item)
+                ExerciseCard(
+                    exercise = item,
+                    onClick = onClick
+                )
 
                 if (index != data.lastIndex) {
                     Spacer(Modifier.height(8.dp))
@@ -71,7 +76,11 @@ fun ExerciseDetailsScreen(
 }
 
 @Composable
-fun ExerciseCard(exercise: Exercise, modifier: Modifier = Modifier) {
+fun ExerciseCard(
+    modifier: Modifier = Modifier,
+    exercise: Exercise,
+    onClick: (Exercise) -> Unit
+) {
     val difficultyColor = when (exercise.difficulty?.lowercase()) {
         "beginner" -> Color(0xFF4CAF50)  // Green for easy
         "intermediate" -> Color(0xFFFFC107)  // Yellow for medium
@@ -83,6 +92,7 @@ fun ExerciseCard(exercise: Exercise, modifier: Modifier = Modifier) {
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         modifier = modifier
+            .clickable(true, onClick = { onClick(exercise) })
             .fillMaxWidth()
             .padding(16.dp)
     ) {

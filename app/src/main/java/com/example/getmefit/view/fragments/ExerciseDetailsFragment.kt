@@ -10,8 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.getmefit.R
 import com.example.getmefit.common.ViewStateCoordinator
-import com.example.getmefit.view.viewmodels.ExerciseViewModel
 import com.example.getmefit.view.composables.ExerciseDetailsScreen
+import com.example.getmefit.view.viewmodels.ExerciseViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -49,7 +49,10 @@ class ExerciseDetailsFragment : Fragment(R.layout.fragment_base) {
                     )
                 }
             ) {
-                ExerciseDetailsScreen(it)
+                ExerciseDetailsScreen(
+                    data = it,
+                    onClick = {}
+                )
             }
         }
     }

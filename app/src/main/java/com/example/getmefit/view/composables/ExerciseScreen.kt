@@ -48,20 +48,25 @@ fun ExerciseScreen(
         FlowRows(
             label = "Muscles",
             items = muscles.value
-        ) { selectedMuscle.value = it }
+        ) { item, isSelected ->
+            selectedMuscle.value = item.updateSelection(isSelected)
+        }
 
         val selectedType = rememberSaveable { mutableStateOf<ExerciseDetails?>(null) }
         val types = remember {
             derivedStateOf { ExerciseType.getItems().updateSelection(selectedType.value) }
         }
-        FlowRows(label = "Types", items = types.value) { selectedType.value = it }
-
+        FlowRows(label = "Types", items = types.value) { item, isSelected ->
+            selectedType.value = item.updateSelection(isSelected)
+        }
 
         val selectedDifficulty = rememberSaveable { mutableStateOf<ExerciseDetails?>(null) }
         val difficulty = remember {
             derivedStateOf { Difficulty.getItems().updateSelection(selectedDifficulty.value) }
         }
-        FlowRows(label = "Difficulty", items = difficulty.value) { selectedDifficulty.value = it }
+        FlowRows(label = "Difficulty", items = difficulty.value) { item, isSelected ->
+            selectedDifficulty.value = item.updateSelection(isSelected)
+        }
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
@@ -89,7 +94,7 @@ fun ExerciseScreen(
 fun FlowRows(
     label: String,
     items: List<ExerciseDetails>,
-    onClick: (ExerciseDetails) -> Unit
+    onClick: (ExerciseDetails, Boolean) -> Unit,
 ) {
     Column {
         Text(
@@ -98,7 +103,7 @@ fun FlowRows(
         )
 
         FlowRow {
-            items.forEach { Chip(it) { onClick(it) } }
+            items.forEach { Chip(it, onClick) }
         }
     }
 
@@ -107,11 +112,11 @@ fun FlowRows(
 @Composable
 private fun Chip(
     detail: ExerciseDetails,
-    onClick: (ExerciseDetails) -> Unit,
+    onClick: (ExerciseDetails, Boolean) -> Unit,
 ) {
     FilterChip(
         selected = detail.isSelected,
-        onClick = { onClick(detail) },
+        onClick = { onClick(detail, !detail.isSelected) },
         label = {
             Text(text = detail.label)
         }
