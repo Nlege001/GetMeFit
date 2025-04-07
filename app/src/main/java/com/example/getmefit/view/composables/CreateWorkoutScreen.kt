@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,10 +16,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
@@ -118,13 +120,14 @@ fun CreateWorkoutScreen(
             LazyColumn {
                 itemsIndexed(
                     workout.value,
-                    key = {index, item -> item.hashCode()}
+                    key = { index, item -> item.hashCode() }
                 ) { index, item ->
                     SwipeToDismissItem(
                         item = item,
                         onRemove = { workout.value = workout.value.minus(it) },
                         content = {
                             ExerciseWorkoutDetails(
+                                modifier = Modifier.padding(horizontal = 16.dp),
                                 exercise = item.exercise,
                                 setCount = item.setCount,
                                 repCount = item.repCount,
@@ -152,7 +155,6 @@ fun CreateWorkoutScreen(
                                         repLogic = { it -> it - 1 },
                                     )
                                 },
-                                showDivider = workout.value.lastIndex != index,
                                 onSetValueChange = { count, exercise ->
                                     workout.value = workout.value.updateCount(
                                         exercise,
@@ -186,36 +188,41 @@ private fun ExerciseWorkoutDetails(
     onRemoveRep: (Int, Exercise) -> Unit,
     onSetValueChange: (Int, Exercise) -> Unit,
     onRepValueChange: (Int, Exercise) -> Unit,
-    showDivider: Boolean = true,
 ) {
-    Column(
-        modifier = modifier.padding(8.dp)
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(4.dp),
     ) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = exercise.name ?: "N/A",
-            style = MaterialTheme.typography.bodyLarge
-        )
-        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-            TextFieldWithAddRemoveCta(
-                count = setCount,
-                onAdd = { onAddSet(it, exercise) },
-                onRemove = { onRemoveSet(it, exercise) },
-                label = "Sets",
-                onValueChange = { onSetValueChange(it.toInt(), exercise) }
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = exercise.name ?: "N/a",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 12.dp)
             )
 
-            TextFieldWithAddRemoveCta(
-                count = repCount,
-                onAdd = { onAddRep(it, exercise) },
-                onRemove = { onRemoveRep(it, exercise) },
-                label = "Reps",
-                onValueChange = { onRepValueChange(it.toInt(), exercise) }
-            )
-        }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                TextFieldWithAddRemoveCta(
+                    label = "Sets",
+                    count = setCount,
+                    onAdd = { onAddSet(it, exercise) },
+                    onRemove = { onRemoveSet(it, exercise) },
+                    onValueChange = { onSetValueChange(it.toInt(), exercise) }
+                )
 
-        if (showDivider) {
-            HorizontalDivider(modifier = Modifier)
+                TextFieldWithAddRemoveCta(
+                    label = "Reps",
+                    count = repCount,
+                    onAdd = { onAddRep(it, exercise) },
+                    onRemove = { onRemoveRep(it, exercise) },
+                    onValueChange = { onRepValueChange(it.toInt(), exercise) }
+                )
+            }
         }
     }
 }

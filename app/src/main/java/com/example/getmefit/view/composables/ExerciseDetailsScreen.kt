@@ -103,9 +103,9 @@ fun ExerciseDetailsScreen(
                                 createWorkout(savedExercises.value)
                             }
                         },
-                        shape = RoundedCornerShape(50), // pill shape
+                        shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF008080), // Teal-ish example, change as needed
+                            containerColor = Color.Black,
                             contentColor = Color.White
                         ),
                         modifier = Modifier.padding(16.dp)

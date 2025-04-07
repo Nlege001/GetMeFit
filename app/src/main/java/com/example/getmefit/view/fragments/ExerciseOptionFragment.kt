@@ -51,8 +51,8 @@ fun ExerciseOptionScreen(
             painter = painterResource(R.mipmap.app_icon),
             contentDescription = null,
             modifier = Modifier
-                .padding(bottom = 16.dp)
-                .size(100.dp)
+                .padding(bottom = 4.dp)
+                .size(300.dp)
         )
 
         ExerciseOptions.entries.forEachIndexed { index, item ->

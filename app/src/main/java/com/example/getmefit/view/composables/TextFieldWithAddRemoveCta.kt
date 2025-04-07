@@ -1,19 +1,13 @@
 package com.example.getmefit.view.composables
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -26,30 +20,31 @@ fun TextFieldWithAddRemoveCta(
     onRemove: (Int) -> Unit,
     onValueChange: (String) -> Unit,
 ) {
-    Column {
-        Text(
-            text = label
-        )
+    Column(
+        modifier = modifier.padding(vertical = 8.dp)
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            BasicTextField(
+            OutlinedTextField(
                 value = count.toString(),
                 onValueChange = onValueChange,
-                modifier = modifier
-                    .border(1.dp, Color.Gray)
-                    .padding(8.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                modifier = Modifier
+                    .width(80.dp)
+                    .padding(end = 12.dp),
+                singleLine = true,
+                textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                label = { Text(label) }
             )
 
             AddRemoveCtas(
                 onAdd = { onAdd(count) },
                 onRemove = { onRemove(count) },
-                isRemoveEnabled = count != 0
+                isRemoveEnabled = count > 0
             )
         }
     }
-
 }
 
 @Preview(showBackground = true)
