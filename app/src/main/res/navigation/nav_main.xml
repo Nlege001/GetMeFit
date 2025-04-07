@@ -15,7 +15,7 @@
         android:label="Exercises">
         <argument
             android:name="version"
-            app:argType="com.example.getmefit.view.data.ExerciseOptions"/>
+            app:argType="com.example.getmefit.view.data.ExerciseOptions" />
     </fragment>
 
     <action
@@ -34,4 +34,17 @@
     <action
         android:id="@+id/navToExerciseDetailsFragment"
         app:destination="@id/exerciseDetailsFragment" />
+
+    <fragment
+        android:id="@+id/createWorkoutFragment"
+        android:name="com.example.getmefit.view.fragments.CreateWorkoutFragment"
+        android:label="Create workout">
+        <argument
+            android:name="exercises"
+            app:argType="com.example.getmefit.network.data.Exercise[]" />
+    </fragment>
+
+    <action
+        android:id="@+id/navToCreateWorkoutFragment"
+        app:destination="@id/createWorkoutFragment" />
 </navigation>

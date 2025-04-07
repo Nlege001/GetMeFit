@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.getmefit.R
 import com.example.getmefit.common.ViewStateCoordinator
@@ -36,6 +37,7 @@ class ExerciseDetailsFragment : Fragment(R.layout.fragment_base) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val contentId = view.findViewById<ComposeView>(R.id.content)
+        val navController = findNavController()
         contentId.setContent {
             ViewStateCoordinator(
                 viewModel = exerciseViewModel,
@@ -52,7 +54,14 @@ class ExerciseDetailsFragment : Fragment(R.layout.fragment_base) {
                 ExerciseDetailsScreen(
                     data = it,
                     onClick = {},
-                    version = args.navData.version
+                    version = args.navData.version,
+                    createWorkout = {
+                        navController.navigate(
+                            CreateWorkoutFragmentDirections.navToCreateWorkoutFragment(
+                                it.toTypedArray()
+                            )
+                        )
+                    }
                 )
             }
         }

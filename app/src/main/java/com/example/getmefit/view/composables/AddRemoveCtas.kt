@@ -19,11 +19,12 @@ import com.example.getmefit.view.data.mockdata.mockExercise
 
 @Composable
 fun AddRemoveCtas(
-    exercise: Exercise,
+    exercise: Exercise? = null,
     modifier: Modifier = Modifier,
     onAdd: () -> Unit,
     onRemove: () -> Unit,
-    isAdded: (Exercise) -> Boolean,
+    isRemoveEnabled: Boolean = true,
+    isAdded: (Exercise?) -> Boolean = { false },
 ) {
     Column(
         modifier = modifier,
@@ -54,7 +55,8 @@ fun AddRemoveCtas(
             }
 
             IconButton(
-                onClick = onRemove
+                onClick = onRemove,
+                enabled = isRemoveEnabled
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_remove),

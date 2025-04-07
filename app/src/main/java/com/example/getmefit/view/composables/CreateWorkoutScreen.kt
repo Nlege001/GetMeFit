@@ -1,0 +1,309 @@
+package com.example.getmefit.view.composables
+
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberSwipeToDismissBoxState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.example.getmefit.R
+import com.example.getmefit.network.data.Exercise
+import com.example.getmefit.view.composables.SetRepCount.Companion.updateCount
+import com.example.getmefit.view.data.mockdata.mockExercise
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import kotlin.time.Duration.Companion.seconds
+
+@Composable
+fun CreateWorkoutScreen(
+    modifier: Modifier = Modifier,
+    exercises: List<Exercise>
+) {
+    val workout =
+        rememberSaveable { mutableStateOf<List<SetRepCount>>(exercises.map { SetRepCount(exercise = it) }) }
+    val dateSelected = rememberSaveable { mutableStateOf<Long?>(null) }
+    val isDateModalVisible = rememberSaveable { mutableStateOf(false) }
+    Column(modifier = modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(R.mipmap.app_icon),
+            contentDescription = null,
+            modifier = Modifier
+                .size(100.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+
+        Text(
+            modifier = Modifier.padding(16.dp),
+            text = "Please provide the number of sets and reps you did for each exercise. Swipe left to delete exercises",
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center
+        )
+
+        val date = dateSelected.value
+        if (date != null) {
+            Text(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 16.dp),
+                text = "Recording workout for ${formatDateLegacy(date)} "
+            )
+        }
+        Button(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 16.dp),
+            onClick = {
+                isDateModalVisible.value = true
+            }
+        ) {
+            Text(
+                text = if (date == null) {
+                    "Select a date"
+                } else {
+                    "Change date"
+                }
+            )
+        }
+
+        if (isDateModalVisible.value) {
+            DatePickerModal(
+                onDateSelected = { dateSelected.value = it },
+                onDismiss = { isDateModalVisible.value = false }
+            )
+        }
+
+        if (workout.value.isEmpty()) {
+            Text(
+                modifier = Modifier
+                    .padding(top = 48.dp)
+                    .align(Alignment.CenterHorizontally),
+                text = "Go back and choose exercises to add"
+            )
+        } else {
+            LazyColumn {
+                itemsIndexed(
+                    workout.value,
+                    key = {index, item -> item.hashCode()}
+                ) { index, item ->
+                    SwipeToDismissItem(
+                        item = item,
+                        onRemove = { workout.value = workout.value.minus(it) },
+                        content = {
+                            ExerciseWorkoutDetails(
+                                exercise = item.exercise,
+                                setCount = item.setCount,
+                                repCount = item.repCount,
+                                onAddSet = { count, exercise ->
+                                    workout.value = workout.value.updateCount(
+                                        exercise = exercise,
+                                        setLogic = { it -> it + 1 },
+                                    )
+                                },
+                                onRemoveSet = { count, exercise ->
+                                    workout.value = workout.value.updateCount(
+                                        exercise = exercise,
+                                        setLogic = { it -> it - 1 },
+                                    )
+                                },
+                                onAddRep = { count, exercise ->
+                                    workout.value = workout.value.updateCount(
+                                        exercise = exercise,
+                                        repLogic = { it -> it + 1 },
+                                    )
+                                },
+                                onRemoveRep = { count, exercise ->
+                                    workout.value = workout.value.updateCount(
+                                        exercise = exercise,
+                                        repLogic = { it -> it - 1 },
+                                    )
+                                },
+                                showDivider = workout.value.lastIndex != index,
+                                onSetValueChange = { count, exercise ->
+                                    workout.value = workout.value.updateCount(
+                                        exercise,
+                                        setCount = count
+                                    )
+                                },
+                                onRepValueChange = { count, exercise ->
+                                    workout.value = workout.value.updateCount(
+                                        exercise,
+                                        repCount = count
+                                    )
+                                }
+                            )
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ExerciseWorkoutDetails(
+    modifier: Modifier = Modifier,
+    exercise: Exercise,
+    setCount: Int,
+    repCount: Int,
+    onAddSet: (Int, Exercise) -> Unit,
+    onRemoveSet: (Int, Exercise) -> Unit,
+    onAddRep: (Int, Exercise) -> Unit,
+    onRemoveRep: (Int, Exercise) -> Unit,
+    onSetValueChange: (Int, Exercise) -> Unit,
+    onRepValueChange: (Int, Exercise) -> Unit,
+    showDivider: Boolean = true,
+) {
+    Column(
+        modifier = modifier.padding(8.dp)
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = exercise.name ?: "N/A",
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            TextFieldWithAddRemoveCta(
+                count = setCount,
+                onAdd = { onAddSet(it, exercise) },
+                onRemove = { onRemoveSet(it, exercise) },
+                label = "Sets",
+                onValueChange = { onSetValueChange(it.toInt(), exercise) }
+            )
+
+            TextFieldWithAddRemoveCta(
+                count = repCount,
+                onAdd = { onAddRep(it, exercise) },
+                onRemove = { onRemoveRep(it, exercise) },
+                label = "Reps",
+                onValueChange = { onRepValueChange(it.toInt(), exercise) }
+            )
+        }
+
+        if (showDivider) {
+            HorizontalDivider(modifier = Modifier)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DatePickerModal(
+    onDateSelected: (Long?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val datePickerState = rememberDatePickerState()
+
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = {
+                onDateSelected(datePickerState.selectedDateMillis)
+                onDismiss()
+            }) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    ) {
+        DatePicker(state = datePickerState)
+    }
+}
+
+fun formatDateLegacy(millis: Long): String {
+    val date = Date(millis)
+    val formatter = SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
+    return formatter.format(date)
+}
+
+@Composable
+fun SwipeToDismissItem(
+    item: SetRepCount,
+    content: @Composable () -> Unit,
+    onRemove: (SetRepCount) -> Unit,
+) {
+    val scope = rememberCoroutineScope()
+    val swipeToDismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { state ->
+            if (state == SwipeToDismissBoxValue.EndToStart) {
+                scope.launch {
+                    delay(1.seconds)
+                    onRemove(item)
+                }
+                true
+            } else {
+                false
+            }
+        }
+    )
+
+    SwipeToDismissBox(
+        state = swipeToDismissState,
+        backgroundContent = {
+            val bgColor by animateColorAsState(
+                targetValue = when (swipeToDismissState.currentValue) {
+                    SwipeToDismissBoxValue.EndToStart -> Color.Red
+                    SwipeToDismissBoxValue.StartToEnd -> Color.Green
+                    SwipeToDismissBoxValue.Settled -> Color.White
+                },
+                label = ""
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(bgColor)
+            )
+        },
+    ) { content.invoke() }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
+@Composable
+fun PreviewCreateWorkoutScreen() {
+    CreateWorkoutScreen(
+        exercises = listOf(
+            mockExercise,
+            mockExercise.copy(name = "name1"),
+            mockExercise.copy(name = "name2"),
+        )
+    )
+}
