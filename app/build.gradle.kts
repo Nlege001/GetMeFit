@@ -82,4 +82,6 @@ dependencies {
     implementation(libs.androidxAppcompat)
 
     implementation(libs.glidecompose)
+    implementation(libs.datastore.preferences)
+    implementation(libs.protobuf)
 }

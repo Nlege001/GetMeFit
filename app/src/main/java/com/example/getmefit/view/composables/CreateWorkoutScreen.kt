@@ -71,7 +71,7 @@ fun CreateWorkoutScreen(
 
         Text(
             modifier = Modifier.padding(16.dp),
-            text = "Please provide the number of sets and reps you did for each exercise. Swipe left to delete exercises",
+            text = "Please provide the number of sets and reps you did for each exercise. Swipe left to delete exercises; scroll to fill in data and save",
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center
         )
@@ -170,6 +170,20 @@ fun CreateWorkoutScreen(
                             )
                         }
                     )
+                }
+
+                item {
+                    Button(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth(),
+                        onClick = {
+
+                        },
+                        enabled = true
+                    ) {
+                        Text("Save")
+                    }
                 }
             }
         }

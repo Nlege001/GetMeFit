@@ -17,6 +17,8 @@ retrofitVersion = "2.11.0"
 composeCompiler = "1.5.15"
 appcompat = "1.7.0"
 glide_compose = "1.0.0-beta01"
+datastore = "1.1.4"
+protobuf = "3.25.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +48,8 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 composeCompiler = { group = "androidx.compose.compiler", name = "compiler", version.ref = "composeCompiler" }
 androidxAppcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 glidecompose = { module = "com.github.bumptech.glide:compose", version.ref = "glide_compose" }
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+protobuf = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobuf" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
