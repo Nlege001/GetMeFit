@@ -47,4 +47,13 @@
     <action
         android:id="@+id/navToCreateWorkoutFragment"
         app:destination="@id/createWorkoutFragment" />
+
+    <fragment
+        android:id="@+id/myWorkoutsFragment"
+        android:name="com.example.getmefit.view.fragments.MyWorkoutsFragment"
+        android:label="My workouts" />
+
+    <action
+        android:id="@+id/navToMyWorkoutsFragment"
+        app:destination="@+id/myWorkoutsFragment" />
 </navigation>

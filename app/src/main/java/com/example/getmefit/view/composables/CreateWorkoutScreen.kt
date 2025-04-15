@@ -42,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.getmefit.R
+import com.example.getmefit.common.formatDateLegacy
 import com.example.getmefit.network.data.Exercise
 import com.example.getmefit.view.composables.SetRepCount.Companion.checkErrorState
 import com.example.getmefit.view.composables.SetRepCount.Companion.updateCount
@@ -277,12 +278,6 @@ fun DatePickerModal(
     ) {
         DatePicker(state = datePickerState)
     }
-}
-
-fun formatDateLegacy(millis: Long): String {
-    val date = Date(millis)
-    val formatter = SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
-    return formatter.format(date)
 }
 
 @Composable

@@ -5,16 +5,17 @@ import androidx.lifecycle.viewModelScope
 import com.example.getmefit.network.repo.CreateWorkoutRepo
 import com.example.getmefit.view.composables.SetRepCount
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateWorkoutViewModel @Inject constructor(
-    private val repo: CreateWorkoutRepo
+    private val repo: CreateWorkoutRepo,
 ) : ViewModel() {
 
     fun saveWorkout(date: Long, workout: List<SetRepCount>) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repo.saveWorkouts(date, workout)
         }
     }
