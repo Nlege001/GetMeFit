@@ -29,6 +29,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -50,9 +52,6 @@ import com.example.getmefit.view.data.mockdata.mockExercise
 import com.example.getmefit.view.viewmodels.CreateWorkoutViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -65,6 +64,12 @@ fun CreateWorkoutScreen(
         rememberSaveable { mutableStateOf<List<SetRepCount>>(exercises.map { SetRepCount(exercise = it) }) }
     val dateSelected = rememberSaveable { mutableStateOf<Long?>(null) }
     val isDateModalVisible = rememberSaveable { mutableStateOf(false) }
+    val saveSuccess = viewModel.saveSuccess.collectAsState().value
+    LaunchedEffect(saveSuccess) {
+        if (saveSuccess == true) {
+            done()
+        }
+    }
     Column(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.mipmap.app_icon),
@@ -189,7 +194,6 @@ fun CreateWorkoutScreen(
                                     workout.value
                                 )
                             }
-                            done()
                         },
                         enabled = dateSelected.value != null && workout.value.checkErrorState()
                     ) {
