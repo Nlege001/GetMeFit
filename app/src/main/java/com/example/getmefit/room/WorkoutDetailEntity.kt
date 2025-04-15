@@ -6,6 +6,7 @@ import com.example.getmefit.view.composables.SetRepCount
 
 @Entity(tableName = "workouts")
 data class WorkoutDetailEntity(
-    @PrimaryKey val date: Long,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val date: Long,
     val details: List<SetRepCount>
 )

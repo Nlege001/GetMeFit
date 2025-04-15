@@ -31,7 +31,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.getmefit.R
 import com.example.getmefit.common.formatDateLegacy
 import com.example.getmefit.view.composables.SetRepCount
-import com.example.getmefit.view.data.WorkoutDetails
 import com.example.getmefit.view.viewmodels.MyWorkoutViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -52,7 +51,8 @@ class MyWorkoutsFragment : Fragment(R.layout.fragment_base) {
 fun MyWorkoutScreen(
     myWorkoutViewModel: MyWorkoutViewModel = hiltViewModel()
 ) {
-    val workoutDetails = myWorkoutViewModel.workouts.collectAsState(emptyList()).value
+    val groupedWorkouts = myWorkoutViewModel.workouts.collectAsState(emptyMap()).value
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -68,19 +68,29 @@ fun MyWorkoutScreen(
             HorizontalDivider()
         }
 
-        items(workoutDetails) {
-            WorkoutCard(
-                workout = it,
-                onClick = {}
-            )
-        }
+        groupedWorkouts.forEach { (date, workoutList) ->
+            item {
+                Text(
+                    text = formatDateLegacy(date),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
 
+            items(workoutList) { workout ->
+                WorkoutCard(
+                    repSetData = workout,
+                    onClick = {}
+                )
+            }
+        }
     }
 }
 
 @Composable
 fun WorkoutCard(
-    workout: WorkoutDetails,
+    repSetData: SetRepCount,
     onClick: () -> Unit
 ) {
     Card(
@@ -92,17 +102,8 @@ fun WorkoutCard(
         elevation = CardDefaults.cardElevation(6.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = formatDateLegacy(workout.date),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            workout.data.forEach { setRep ->
-                SetRepItem(setRep)
-                Spacer(modifier = Modifier.height(6.dp))
-            }
+            SetRepItem(repSetData)
+            Spacer(modifier = Modifier.height(6.dp))
         }
     }
 }
