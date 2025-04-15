@@ -82,6 +82,10 @@ dependencies {
     implementation(libs.androidxAppcompat)
 
     implementation(libs.glidecompose)
-    implementation(libs.datastore.preferences)
-    implementation(libs.protobuf)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    kapt(libs.room.compiler)
+
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
 }

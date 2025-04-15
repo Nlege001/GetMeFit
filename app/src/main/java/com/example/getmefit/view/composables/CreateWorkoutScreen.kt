@@ -40,10 +40,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.getmefit.R
 import com.example.getmefit.network.data.Exercise
+import com.example.getmefit.view.composables.SetRepCount.Companion.checkErrorState
 import com.example.getmefit.view.composables.SetRepCount.Companion.updateCount
 import com.example.getmefit.view.data.mockdata.mockExercise
+import com.example.getmefit.view.viewmodels.CreateWorkoutViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -53,14 +56,15 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun CreateWorkoutScreen(
-    modifier: Modifier = Modifier,
-    exercises: List<Exercise>
+    viewModel: CreateWorkoutViewModel = hiltViewModel(),
+    exercises: List<Exercise>,
+    done: () -> Unit,
 ) {
     val workout =
         rememberSaveable { mutableStateOf<List<SetRepCount>>(exercises.map { SetRepCount(exercise = it) }) }
     val dateSelected = rememberSaveable { mutableStateOf<Long?>(null) }
     val isDateModalVisible = rememberSaveable { mutableStateOf(false) }
-    Column(modifier = modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.mipmap.app_icon),
             contentDescription = null,
@@ -178,9 +182,15 @@ fun CreateWorkoutScreen(
                             .padding(16.dp)
                             .fillMaxWidth(),
                         onClick = {
-
+                            dateSelected.value?.let {
+                                viewModel.saveWorkout(
+                                    it,
+                                    workout.value
+                                )
+                            }
+                            done()
                         },
-                        enabled = true
+                        enabled = dateSelected.value != null && workout.value.checkErrorState()
                     ) {
                         Text("Save")
                     }
@@ -309,9 +319,15 @@ fun SwipeToDismissItem(
             )
             Box(
                 modifier = Modifier
+                    .padding(8.dp)
                     .fillMaxSize()
                     .background(bgColor)
-            )
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = "Removed"
+                )
+            }
         },
     ) { content.invoke() }
 }
@@ -325,6 +341,7 @@ fun PreviewCreateWorkoutScreen() {
             mockExercise,
             mockExercise.copy(name = "name1"),
             mockExercise.copy(name = "name2"),
-        )
+        ),
+        done = { }
     )
 }

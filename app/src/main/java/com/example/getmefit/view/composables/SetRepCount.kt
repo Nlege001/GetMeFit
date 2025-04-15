@@ -2,8 +2,10 @@ package com.example.getmefit.view.composables
 
 import android.os.Parcelable
 import com.example.getmefit.network.data.Exercise
+import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 
+@JsonClass(generateAdapter = true)
 @Parcelize
 data class SetRepCount(
     val setCount: Int = 0,
@@ -38,13 +40,17 @@ data class SetRepCount(
             return this.map {
                 if (it.exercise == exercise) {
                     it.copy(
-                        setCount = setCount?: it.setCount,
+                        setCount = setCount ?: it.setCount,
                         repCount = repCount ?: it.repCount
                     )
                 } else {
                     it
                 }
             }
+        }
+
+        fun List<SetRepCount>.checkErrorState(): Boolean {
+            return !this.any { it.setCount == 0 || it.repCount == 0 }
         }
 
     }
